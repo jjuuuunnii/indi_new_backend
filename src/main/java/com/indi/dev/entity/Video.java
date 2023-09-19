@@ -31,12 +31,15 @@ public class Video {
     @Enumerated(EnumType.STRING)
     private Genre genre;
 
+    @Builder.Default
     @OneToMany(mappedBy = "video", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "video", cascade = CascadeType.ALL)
     private List<Like> likes = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "video", cascade = CascadeType.ALL)
     private List<View> views = new ArrayList<>();
 
@@ -50,6 +53,10 @@ public class Video {
     public Video(){}
     public int totalLikesCnt(){
         return likes.size();
+    }
+
+    public int totalViewsCnt(){
+        return views.size();
     }
 
 

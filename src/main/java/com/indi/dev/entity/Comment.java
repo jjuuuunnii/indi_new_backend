@@ -21,6 +21,7 @@ public class Comment {
 
     private String content;
 
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -30,6 +31,18 @@ public class Comment {
     private Video video;
 
     private LocalDateTime createAt;
+
+    public static Comment saveComment(Video video, String content, User user) {
+        Comment comment = Comment.builder()
+                .content(content)
+                .user(user)
+                .video(video)
+                .createAt(LocalDateTime.now())
+                .build();
+        user.getComments().add(comment);
+        video.getComments().add(comment);
+        return comment;
+    }
     public Comment(){}
 
 }

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
-@Controller
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/oauth")

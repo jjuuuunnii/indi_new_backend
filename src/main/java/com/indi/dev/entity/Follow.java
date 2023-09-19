@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -29,21 +30,17 @@ public class Follow {
     @JoinColumn(name = "followed_user_id")
     private User followedUser;
 
+    private LocalDateTime createdAt;
+
+    public static Follow makeFollowEntity(User followingUser, User followedUser) {
+        Follow follow = Follow.builder()
+                .followingUser(followingUser)
+                .followedUser(followedUser)
+                .createdAt(LocalDateTime.now())
+                .build();
+        followingUser.getFollowings().add(follow);
+        followedUser.getFollowers().add(follow);
+        return follow;
+    }
     public Follow(){}
-
-    public void setFollowingUser(User user) {
-        if(this.followingUser != null) {
-            this.followingUser.getFollowings().remove(this);
-        }
-        this.followingUser = user;
-        user.getFollowings().add(this);
-    }
-
-    public void setFollowedUser(User user) {
-        if(this.followedUser != null) {
-            this.followedUser.getFollowers().remove(this);
-        }
-        this.followedUser = user;
-        user.getFollowers().add(this);
-    }
 }

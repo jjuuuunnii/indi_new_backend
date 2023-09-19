@@ -1,4 +1,4 @@
-package com.indi.dev.dto.oauth;
+package com.indi.dev.dto.view;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,10 +9,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @Builder
-public class UserAfterLoginDto {
-
-    private boolean isRequiredMoreInfo;
+public class ViewReqDto {
     private String nickName;
 
-    public UserAfterLoginDto(){}
+    public ViewReqDto(){}
 }

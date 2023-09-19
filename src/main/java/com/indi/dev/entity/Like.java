@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -31,6 +32,19 @@ public class Like {
     private User user;
 
 
+    private LocalDateTime createdAt;
+
+    public static Like makeLikeEntity(User user, Video video) {
+        Like like = Like.builder()
+                .user(user)
+                .video(video)
+                .createdAt(LocalDateTime.now())
+                .build();
+        user.getLikes().add(like);
+        video.getLikes().add(like);
+
+        return like;
+    }
     public Like(){}
 }
 

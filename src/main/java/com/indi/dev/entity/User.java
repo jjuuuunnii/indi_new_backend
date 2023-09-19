@@ -45,22 +45,27 @@ public class User {
     private String nickName;
 
 
-
+    @Builder.Default
     @OneToMany(mappedBy = "followingUser", cascade = CascadeType.ALL)
     private List<Follow> followings = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "followedUser", cascade = CascadeType.ALL)
     private List<Follow> followers = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Video> videos = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Like> likes = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<View> views = new ArrayList<>();
 
@@ -78,15 +83,10 @@ public class User {
         this.refreshToken = refreshToken;
     }
 
-    public void addFollowing(Follow follow) {
-        this.followings.add(follow);
-        follow.setFollowingUser(this);
-    }
+    public void updateNickName(String nickName){
+        this.nickName = nickName;}
 
-    public void addFollower(Follow follow) {
-        this.followers.add(follow);
-        follow.setFollowedUser(this);
-    }
+
 
     public User(){}
 }

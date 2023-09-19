@@ -1,6 +1,7 @@
 package com.indi.dev.jwt.filter;
 
 
+import com.indi.dev.entity.PrincipalDetails;
 import com.indi.dev.entity.SocialType;
 import com.indi.dev.entity.User;
 import com.indi.dev.exception.custom.ErrorCode;
@@ -89,8 +90,9 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     }
 
     private void saveAuthentication(User user) {
+        PrincipalDetails principalDetails = new PrincipalDetails(user);
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(user, null, null);
+                new UsernamePasswordAuthenticationToken(principalDetails, null, null);
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
     }
 }

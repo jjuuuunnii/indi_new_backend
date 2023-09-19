@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 
 @Entity
 @Getter
@@ -27,6 +29,20 @@ public class View {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="video_id")
     private Video video;
+    private LocalDateTime createdAt;
 
+    public static View makeViewEntity(Video video, User user){
+        View view = View.builder()
+                .video(video)
+                .user(user)
+                .createdAt(LocalDateTime.now())
+                .build();
+        video.getViews().add(view);
+        user.getViews().add(view);
+
+        return view;
+    }
     public View(){}
+
+
 }

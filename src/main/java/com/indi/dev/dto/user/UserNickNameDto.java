@@ -1,18 +1,17 @@
-package com.indi.dev.dto.oauth;
+package com.indi.dev.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
 @AllArgsConstructor
 @Builder
-public class UserAfterLoginDto {
+@Getter
+@Setter
+public class UserNickNameDto {
 
-    private boolean isRequiredMoreInfo;
     private String nickName;
 
-    public UserAfterLoginDto(){}
+    public UserNickNameDto(){}
 }

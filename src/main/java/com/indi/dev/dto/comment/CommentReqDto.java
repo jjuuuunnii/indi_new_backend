@@ -1,4 +1,5 @@
-package com.indi.dev.dto.oauth;
+package com.indi.dev.dto.comment;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,10 +10,10 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @Builder
-public class UserAfterLoginDto {
+public class CommentReqDto {
 
-    private boolean isRequiredMoreInfo;
     private String nickName;
+    private String content;
 
-    public UserAfterLoginDto(){}
+    public CommentReqDto(){}
 }

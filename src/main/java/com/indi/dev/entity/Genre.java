@@ -2,6 +2,10 @@ package com.indi.dev.entity;
 
 import lombok.Getter;
 
+import java.util.Locale;
+
+import static java.util.Locale.*;
+
 @Getter
 public enum Genre {
     /**
@@ -12,16 +16,12 @@ public enum Genre {
      * 발라드
      * 랩/힙합
      */
-    INDIMUSIC("IndiMusic"),
-    ROCKMETAL("RockMetal"),
-    RNBSOUL("RnBSoul"),
-    POP("Pop"),
-    BALLAD("Ballad"),
-    RAPHIPHOP("RapHiphop");
-
-    private final String genre;
-
-    Genre(String genre) {
-        this.genre = genre;
-    }
+    INDIMUSIC,
+    ROCKMETAL,
+    RNBSOUL,
+    POP,
+    BALLAD,
+    RAPHIPHOP,
+    ;
+    public static Genre fromName(String type){ return Genre.valueOf(type.toUpperCase(ENGLISH)); }
 }
