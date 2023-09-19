@@ -1,0 +1,3 @@
+[submodule "indi_new_backend_submodule"]
+	path = indi_new_backend_submodule
+	url = https://github.com/jjuuuunnii/indi_new_backend_submodule.git

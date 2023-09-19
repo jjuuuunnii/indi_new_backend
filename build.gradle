@@ -37,3 +37,27 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 }
 
+sourceSets {
+	main {
+		resources {
+			srcDirs = ["$projectDir/src/main/resources"]
+		}
+	}
+}
+
+task cleanAppYml(type: Delete) {
+	delete fileTree('src/main/resources') {
+		include 'application*.yml'
+	}
+}
+
+task copySecretAppYml(type: Copy) {
+	dependsOn 'cleanAppYml'
+	from './indi_new_backend_submodule'
+	include 'application*.yml'
+	into 'src/main/resources'
+}
+
+processResources.dependsOn('copySecretAppYml')
+
+
