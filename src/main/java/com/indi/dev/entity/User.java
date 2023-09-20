@@ -1,10 +1,13 @@
 package com.indi.dev.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.indi.dev.config.S3Config;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -37,7 +40,9 @@ public class User {
      * TODO S3활용
      */
     private String profileImgUrl;
+
     private String refreshToken;
+
 
     /**
      * 추가 정보에서 받는 값
@@ -69,12 +74,13 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<View> views = new ArrayList<>();
 
-    public static User oauthUserToEntity(String userName, String email, SocialType socialType, String socialId){
+    public static User oauthUserToEntity(String userName, String email, SocialType socialType, String socialId, String defaultImgPath){
         return User.builder()
                 .name(userName)
                 .email(email)
                 .socialType(socialType)
                 .socialId(socialId)
+                .profileImgUrl(defaultImgPath)
                 .createAt(LocalDateTime.now())
                 .build();
     }
@@ -86,6 +92,9 @@ public class User {
     public void updateNickName(String nickName){
         this.nickName = nickName;}
 
+    public void updateProfileImgUrl(String profileImgUrl){
+        this.profileImgUrl = profileImgUrl;
+    }
 
 
     public User(){}

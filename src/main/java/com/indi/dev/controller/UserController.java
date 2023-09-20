@@ -4,14 +4,12 @@ import com.indi.dev.dto.user.UserNickNameDto;
 import com.indi.dev.entity.PrincipalDetails;
 import com.indi.dev.entity.User;
 import com.indi.dev.facade.AggregationFacade;
-import com.indi.dev.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.File;
 
 
 @RestController
@@ -27,5 +25,15 @@ public class UserController {
                                  @RequestBody UserNickNameDto userNickNameDto){
         User user = principalDetails.getUser();
         aggregationFacade.saveUserNickName(user, userNickNameDto.getNickName());
+    }
+
+    @PutMapping("/{nickName}/mypage/nickName")
+    public void putMyPageNickNameInfo(@PathVariable String nickName, @RequestBody UserNickNameDto userNickNameDto) {
+        aggregationFacade.putMyPageNickNameInfo(nickName, userNickNameDto.getNickName());
+    }
+
+    @PutMapping("/{nickName}/mypage/nickName")
+    public void putMyPageProfileInfo(@PathVariable String nickName, @RequestParam File profileImg) {
+        aggregationFacade.putMyPageProfileInfo(nickName, profileImg);
     }
 }

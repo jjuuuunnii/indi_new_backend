@@ -25,8 +25,13 @@ public class UserService {
         return userRepository.findByNickName(nickName).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 
+    @Transactional
+    public void putMyPageNickNameInfo(User user, String afterNickName) {
+        user.updateNickName(afterNickName);
+    }
 
-
-
-
+    @Transactional
+    public void putMyPageProfileInfo(User user, String profileImgUrl) {
+        user.updateProfileImgUrl(profileImgUrl);
+    }
 }

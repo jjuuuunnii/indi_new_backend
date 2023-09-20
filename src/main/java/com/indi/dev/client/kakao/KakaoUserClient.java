@@ -2,6 +2,7 @@ package com.indi.dev.client.kakao;
 
 
 import com.indi.dev.client.OauthUserClient;
+import com.indi.dev.config.S3Config;
 import com.indi.dev.config.kakao.KakaoOauthConfig;
 import com.indi.dev.dto.oauth.kakao.KakaoTokenDto;
 import com.indi.dev.dto.oauth.kakao.KakaoUserResponseDto;
@@ -17,6 +18,7 @@ public class KakaoUserClient implements OauthUserClient {
 
     private final KakaoOauthConfig kakaoOauthConfig;
     private final KakaoApiClient kakaoApiClient;
+    private final S3Config s3Config;
 
     @Override
     public SocialType supportServer() {
@@ -31,7 +33,8 @@ public class KakaoUserClient implements OauthUserClient {
                 kakaoUserResponseDto.getKakaoAccount().getProfile().getNickname(),
                 kakaoUserResponseDto.getKakaoAccount().getEmail(),
                 SocialType.KAKAO,
-                kakaoUserResponseDto.getId().toString()
+                kakaoUserResponseDto.getId().toString(),
+                s3Config.getDefaultImgPath()
         );
     }
 

@@ -2,6 +2,7 @@ package com.indi.dev.client.google;
 
 
 import com.indi.dev.client.OauthUserClient;
+import com.indi.dev.config.S3Config;
 import com.indi.dev.config.google.GoogleOauthConfig;
 import com.indi.dev.dto.oauth.google.GoogleTokenDto;
 import com.indi.dev.dto.oauth.google.GoogleUserResponseDto;
@@ -18,6 +19,7 @@ public class GoogleUserClient implements OauthUserClient {
 
     private final GoogleApiClient googleApiClient;
     private final GoogleOauthConfig googleOauthConfig;
+    private final S3Config s3Config;
 
 
     @Override
@@ -33,7 +35,8 @@ public class GoogleUserClient implements OauthUserClient {
                 googleUserResponseDto.getName(),
                 googleUserResponseDto.getEmail(),
                 SocialType.GOOGLE,
-                googleUserResponseDto.getId()
+                googleUserResponseDto.getId(),
+                s3Config.getDefaultImgPath()
         );
     }
 

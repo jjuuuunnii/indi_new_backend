@@ -1,8 +1,6 @@
 package com.indi.dev.service;
 
-import com.indi.dev.dto.video.VideoInfoDto;
-import com.indi.dev.dto.video.VideoListDto;
-import com.indi.dev.dto.video.VideoSoloInfoDto;
+import com.indi.dev.dto.video.*;
 import com.indi.dev.entity.Genre;
 import com.indi.dev.entity.User;
 import com.indi.dev.entity.Video;
@@ -12,6 +10,7 @@ import com.indi.dev.repository.video.VideoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -85,5 +84,37 @@ public class VideoService {
         return VideoListDto.builder()
                 .videoList(videoInfoDtoList)
                 .build();
+    }
+
+    @Transactional
+    public void saveVideo(Video video) {
+        videoRepository.save(video);
+    }
+
+    public StudioVideoListDto getStudioVideoList(User user) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+
+        List<StudioVideoInfoDto> videoInfoDtoList = user.getVideos().stream()
+                .map(video ->
+                        StudioVideoInfoDto.builder()
+                                .videoId(video.getId())
+                                .thumbnail(video.getThumbNailPath())
+                                .videoTitle(video.getTitle())
+                                .uploadDateTime(video.getCreatedAt().format(formatter))
+                                .views(video.totalViewsCnt())
+                                .likes(video.totalLikesCnt())
+                                .build()
+                )
+                .toList();
+
+        return StudioVideoListDto.builder()
+                .studioVideoList(videoInfoDtoList)
+                .build();
+    }
+
+    @Transactional
+    public void deleteVideo(User user, List<Long> videoIds) {
+        List<Video> videos = user.getVideos();
+        videos.removeIf(video -> videoIds.contains(video.getId()));
     }
 }

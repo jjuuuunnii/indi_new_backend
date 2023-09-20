@@ -2,6 +2,7 @@ package com.indi.dev.client.naver;
 
 
 import com.indi.dev.client.OauthUserClient;
+import com.indi.dev.config.S3Config;
 import com.indi.dev.config.naver.NaverOauthConfig;
 
 import com.indi.dev.dto.oauth.naver.NaverTokenDto;
@@ -19,6 +20,7 @@ public class NaverUserClient implements OauthUserClient {
 
     private final NaverApiClient naverApiClient;
     private final NaverOauthConfig naverOauthConfig;
+    private final S3Config s3Config;
 
     @Override
     public SocialType supportServer() {
@@ -33,7 +35,9 @@ public class NaverUserClient implements OauthUserClient {
                 naverUserResponseDto.getResponse().getName(),
                 naverUserResponseDto.getResponse().getEmail(),
                 SocialType.KAKAO,
-                naverUserResponseDto.getResponse().getId());
+                naverUserResponseDto.getResponse().getId(),
+                s3Config.getDefaultImgPath()
+        );
     }
 
     private MultiValueMap<String, String> tokenRequestParam(String authCode) {

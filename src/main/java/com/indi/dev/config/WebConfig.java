@@ -2,6 +2,7 @@ package com.indi.dev.config;
 
 
 import com.indi.dev.converter.GenreConverter;
+import com.indi.dev.converter.MultipartFileToFileConverter;
 import com.indi.dev.converter.SocialTypeConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +21,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(new SocialTypeConverter());
         registry.addConverter(new GenreConverter());
+        registry.addConverter(new MultipartFileToFileConverter());
     }
 
     @Bean

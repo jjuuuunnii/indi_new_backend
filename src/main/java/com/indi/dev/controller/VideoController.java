@@ -6,8 +6,7 @@ import com.indi.dev.dto.comment.CommentReqDto;
 import com.indi.dev.dto.follow.FollowStatusDto;
 import com.indi.dev.dto.like.LikeStatusDto;
 import com.indi.dev.dto.user.UserNickNameDto;
-import com.indi.dev.dto.video.VideoListDto;
-import com.indi.dev.dto.video.VideoSoloInfoDto;
+import com.indi.dev.dto.video.*;
 import com.indi.dev.dto.view.ViewReqDto;
 import com.indi.dev.entity.Genre;
 import com.indi.dev.facade.AggregationFacade;
@@ -67,5 +66,26 @@ public class VideoController {
     @GetMapping("/ranking")
     public VideoListDto getVideoRankingList(){
         return aggregationFacade.getVideoRankingList();
+    }
+
+    @PostMapping("/{nickName}")
+    public void saveVideo(@ModelAttribute VideoReqDto videoReqDto, @PathVariable String nickName) {
+        aggregationFacade.saveVideo(
+                nickName,
+                videoReqDto.getVideoFile(),
+                videoReqDto.getThumbnail(),
+                videoReqDto.getGenre(),
+                videoReqDto.getVideoTitle()
+                );
+    }
+
+    @GetMapping("/{nickName}")
+    public StudioVideoListDto getStudioVideoList(@PathVariable String nickName) {
+        return aggregationFacade.getStudioVideoList(nickName);
+    }
+
+    @DeleteMapping("/{nickName}")
+    public void deleteVideo(@PathVariable String nickName, @RequestBody VideoIdDto videoIdDto) {
+        aggregationFacade.deleteVideo(nickName, videoIdDto.getVideoIdList());
     }
 }

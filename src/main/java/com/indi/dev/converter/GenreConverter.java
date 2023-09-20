@@ -9,6 +9,6 @@ public class GenreConverter implements Converter<String, Genre> {
 
     @Override
     public Genre convert(String source) {
-        return Genre.valueOf(source);
+        return Genre.fromName(source);
     }
 }

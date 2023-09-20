@@ -59,6 +59,20 @@ public class Video {
         return views.size();
     }
 
+    public static Video makeVideoEntity(User user, String videoPath, String thumbNailPath, Genre genre, String videoTitle){
+        Video video = Video.builder()
+                .user(user)
+                .genre(genre)
+                .videoPath(videoPath)
+                .thumbNailPath(thumbNailPath)
+                .title(videoTitle)
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        user.getVideos().add(video);
+        return video;
+    }
+
 
 
 }
