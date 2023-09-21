@@ -59,6 +59,7 @@ public class OauthService {
     private void setJwtTokens(HttpServletResponse response, User user) {
         String accessToken = jwtService.createAccessToken(user.getEmail(), user.getSocialType(), user.getSocialId());
         String refreshToken = jwtService.createRefreshToken();
+        log.info("User = {} AccessToken = Bearer {}", user.getName(), accessToken);
         jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
         user.updateRefreshToken(refreshToken);
     }

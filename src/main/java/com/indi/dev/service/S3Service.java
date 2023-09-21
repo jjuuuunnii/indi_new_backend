@@ -1,13 +1,13 @@
 package com.indi.dev.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.indi.dev.entity.Genre;
-import com.indi.dev.entity.User;
-import com.indi.dev.entity.Video;
+import com.indi.dev.config.S3Config;
+import com.indi.dev.exception.custom.CustomException;
+import com.indi.dev.exception.custom.ErrorCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -18,50 +18,42 @@ import java.util.UUID;
 public class S3Service {
 
     private final AmazonS3Client amazonS3Client;
+    private final S3Config s3Config;
 
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucket;
+    public String putFileToS3(File file, String fileName, String directory) {
+        try {
+            String fullPath = directory + fileName;
+            amazonS3Client.putObject(new PutObjectRequest(s3Config.getBucket(), fullPath, file));
 
-    @Value("${cloud.aws.s3.profile-img}")
-    private String profileImgDir;
-
-    @Value("${cloud.aws.s3.video}")
-    private String videoDir;
-
-    @Value("${cloud.aws.s3.thumbnail}")
-    private String thumbnailDir;
-
-    public String putVideoToS3(File videoFile, String videoFileName) {
-        amazonS3Client.putObject(new PutObjectRequest(videoDir, videoFileName, videoFile).withCannedAcl(
-                CannedAccessControlList.PublicRead));
-        return amazonS3Client.getUrl(bucket, videoFileName).toString();
+            return amazonS3Client.getUrl(s3Config.getBucket(), fullPath).toString();
+        } catch (AmazonS3Exception e) {
+            throw new CustomException(ErrorCode.S3_ERROR);
+        }
     }
 
 
-    public String putThumbnailToS3(File thumbnail, String thumbnailName) {
-        amazonS3Client.putObject(new PutObjectRequest(thumbnailDir, thumbnailName, thumbnail).withCannedAcl(
-                CannedAccessControlList.PublicRead));
-        return amazonS3Client.getUrl(bucket, thumbnailName).toString();
+
+    public void deleteFromS3(String path, String dir) {
+        try {
+            amazonS3Client.deleteObject(s3Config.getBucket(), dir + path);
+        } catch (AmazonS3Exception e) {
+            throw new CustomException(ErrorCode.S3_ERROR);
+        }
     }
 
-    public String putProfileImgToS3(File profileImg, String profileName){
-        amazonS3Client.putObject(new PutObjectRequest(profileImgDir, profileName, profileImg).withCannedAcl(
-                CannedAccessControlList.PublicRead));
-        return amazonS3Client.getUrl(bucket, profileName).toString();
+
+    public String makefileName(String fileType) {
+        String extension;
+        if ("profile".equals(fileType) || "thumbnail".equals(fileType)) {
+            extension = ".jpeg";
+        } else if ("video".equals(fileType)) {
+            extension = ".mp4";
+        } else {
+            extension = ""; // 기본 확장자 또는 에러 처리
+        }
+        return UUID.randomUUID() + extension;
     }
 
-    public String makeVideoFileName(String videoFileName) {
-        return UUID.randomUUID()+ "." + videoFileName;
-    }
 
-    public String makeThumbnailName(String thumbnailName){
-        return UUID.randomUUID() + "." + thumbnailName;
-    }
 
-    public String makeProfileName(String profileName) {
-        return UUID.randomUUID() + "." + profileName;}
-
-    public Video saveVideo(User user, String videoPath, String thumbnailPath, Genre genre, String videoTitle) {
-        return Video.makeVideoEntity(user, videoPath, thumbnailPath, genre, videoTitle);
-    }
 }

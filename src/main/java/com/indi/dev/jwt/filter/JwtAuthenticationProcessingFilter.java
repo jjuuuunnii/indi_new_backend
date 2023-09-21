@@ -66,7 +66,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     private void checkAccessTokenAndAuthentication(HttpServletRequest request) {
         jwtService.extractAccessToken(request)
                 .ifPresent(accessToken -> {
-                            String socialId = jwtService.extractSocialId(accessToken).orElseThrow(() -> new InvalidAccessTokenException("유효하지 않은 엑세스 토큰입니다.", ErrorCode.INVALID_TOKEN.getCode()));
+                            String socialId = jwtService.extractSocialId(accessToken).orElseThrow(() ->  new InvalidAccessTokenException("유효하지 않은 엑세스 토큰입니다.", ErrorCode.INVALID_TOKEN.getCode()));
                             SocialType socialType = jwtService.extractSocialType(accessToken).orElseThrow(() -> new InvalidAccessTokenException("유효하지 않은 엑세스 토큰입니다.", ErrorCode.INVALID_TOKEN.getCode()));
                             userRepository.findBySocialIdAndSocialType(socialId, socialType)
                                     .ifPresent(

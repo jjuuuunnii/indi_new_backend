@@ -11,6 +11,11 @@ java {
 	sourceCompatibility = '17'
 }
 
+compileJava {
+	options.compilerArgs << '-parameters'
+}
+
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -23,6 +28,7 @@ repositories {
 
 dependencies {
 	implementation 'com.auth0:java-jwt:4.3.0'
+	implementation 'javax.xml.bind:jaxb-api:2.3.1'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -40,6 +46,10 @@ dependencies {
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.0'
 	runtimeOnly 'org.junit.platform:junit-platform-launcher:1.7.2'
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.1.RELEASE'
+
+	testImplementation("org.junit.vintage:junit-vintage-engine") {
+		exclude group: "org.hamcrest", module: "hamcrest-core"
+	}
 }
 
 test {

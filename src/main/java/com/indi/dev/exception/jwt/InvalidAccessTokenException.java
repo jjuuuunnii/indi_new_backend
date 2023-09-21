@@ -9,7 +9,6 @@ public class InvalidAccessTokenException extends AuthenticationException {
         super(message);
         this.errorCode = errorCode;
     }
-
     public String getErrorCode() {
         return errorCode;
     }

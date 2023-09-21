@@ -1,5 +1,7 @@
 package com.indi.dev.service;
 
+import com.indi.dev.dto.user.UserHomeInfoDto;
+import com.indi.dev.dto.user.UserHomeInfoListDto;
 import com.indi.dev.dto.video.*;
 import com.indi.dev.entity.Genre;
 import com.indi.dev.entity.User;
@@ -87,7 +89,8 @@ public class VideoService {
     }
 
     @Transactional
-    public void saveVideo(Video video) {
+    public void saveVideo(User user, String videoPath, String thumbnailPath, Genre genre, String videoTitle) {
+        Video video = Video.makeVideoEntity(user, videoPath, thumbnailPath, genre, videoTitle);
         videoRepository.save(video);
     }
 
@@ -116,5 +119,20 @@ public class VideoService {
     public void deleteVideo(User user, List<Long> videoIds) {
         List<Video> videos = user.getVideos();
         videos.removeIf(video -> videoIds.contains(video.getId()));
+    }
+
+    public UserHomeInfoListDto getUserHomeInfoList(List<Video> videos) {
+        List<UserHomeInfoDto> userHomeInfoDtoList = videos.stream()
+                .map(video -> UserHomeInfoDto.builder()
+                        .videoId(video.getId())
+                        .likes(video.totalLikesCnt())
+                        .views(video.totalViewsCnt())
+                        .thumbnail(video.getThumbNailPath())
+                        .build()
+                ).toList();
+
+        return UserHomeInfoListDto.builder()
+                .homeData(userHomeInfoDtoList)
+                .build();
     }
 }

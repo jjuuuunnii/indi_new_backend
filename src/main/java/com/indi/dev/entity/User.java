@@ -8,10 +8,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Setter
@@ -35,6 +37,7 @@ public class User {
     private SocialType socialType;
     private String socialId;
     private LocalDateTime createAt;
+    private String password;
 
     /**
      * TODO S3활용
@@ -81,6 +84,8 @@ public class User {
                 .socialType(socialType)
                 .socialId(socialId)
                 .profileImgUrl(defaultImgPath)
+                .nickName("")
+                .password(UUID.randomUUID().toString())
                 .createAt(LocalDateTime.now())
                 .build();
     }

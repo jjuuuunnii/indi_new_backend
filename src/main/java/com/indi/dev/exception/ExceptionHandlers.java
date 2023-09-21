@@ -2,7 +2,6 @@ package com.indi.dev.exception;
 
 import com.indi.dev.dto.exception.ErrorDto;
 import com.indi.dev.exception.custom.CustomException;
-import com.indi.dev.exception.jwt.InvalidAccessTokenException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +19,6 @@ public class ExceptionHandlers {
         return new ResponseEntity<>(errorDto, e.getErrorCode().getHttpStatus());
     }
 
-    @ExceptionHandler({InvalidAccessTokenException.class})
-    public ResponseEntity<ErrorDto> handleInvalidAccessTokenException(InvalidAccessTokenException e) {
-        log.error("error = {}", e.getMessage());
-        ErrorDto errorDto = ErrorDto.builder().code(e.getMessage()).build();
-        return new ResponseEntity<>(errorDto, HttpStatus.UNAUTHORIZED);
-    }
 
     @ExceptionHandler({NumberFormatException.class})
     public ResponseEntity<ErrorDto> handleNumberFormatException(NumberFormatException e){

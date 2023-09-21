@@ -21,6 +21,14 @@ public class S3Config {
     private String region;
     @Value("${cloud.aws.s3.default-img}")
     private String defaultImgPath;
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
+    @Value("${cloud.aws.s3.profile-img}")
+    private String profileImgDir;
+    @Value("${cloud.aws.s3.video}")
+    private String videoDir;
+    @Value("${cloud.aws.s3.thumbnail}")
+    private String thumbnailDir;
 
     @Bean
     public AmazonS3Client amazonS3Client(){

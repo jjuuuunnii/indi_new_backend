@@ -1,21 +1,26 @@
 package com.indi.dev.facade;
 
+import com.indi.dev.config.S3Config;
 import com.indi.dev.dto.comment.CommentListDto;
 import com.indi.dev.dto.follow.FollowStatusDto;
 import com.indi.dev.dto.like.LikeStatusDto;
+import com.indi.dev.dto.user.FollowDto;
+import com.indi.dev.dto.user.LikeDto;
+import com.indi.dev.dto.user.UserHomeInfoListDto;
+import com.indi.dev.dto.user.UserMyPageInfoDto;
 import com.indi.dev.dto.video.StudioVideoListDto;
 import com.indi.dev.dto.video.VideoListDto;
 import com.indi.dev.dto.video.VideoSoloInfoDto;
-import com.indi.dev.entity.Comment;
-import com.indi.dev.entity.Genre;
-import com.indi.dev.entity.User;
-import com.indi.dev.entity.Video;
+import com.indi.dev.entity.*;
+import com.indi.dev.exception.custom.CustomException;
+import com.indi.dev.exception.custom.ErrorCode;
 import com.indi.dev.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -27,9 +32,14 @@ public class AggregationFacade {
     private final CommentService commentService;
     private final LikeService likeService;
     private final S3Service s3Service;
+    private final S3Config s3Config;
+
 
 
     public void saveUserNickName(User user, String nickName) {
+        if(userService.checkDuplicateNickName(nickName)){
+            throw new CustomException(ErrorCode.DUPLICATED_USER);
+        }
         userService.saveUserNickName(user,nickName);
     }
 
@@ -48,12 +58,12 @@ public class AggregationFacade {
         return videoService.getVideoList(genre);
     }
 
-    public VideoSoloInfoDto getVideoSoloInfo(Long videoId, String nickName) {
-        User user = userService.findUserByNickName(nickName);
+    public VideoSoloInfoDto getVideoSoloInfo(Long videoId) {
         Video video = videoService.findByVideoId(videoId);
+        User user = video.getUser();
         boolean isLiked = user.getLikes().stream()
                 .anyMatch(like -> like.getVideo().getId().equals(videoId));
-        boolean isFollowed = followService.checkedFollowingStatus(user, nickName);
+        boolean isFollowed = followService.checkedFollowingStatus(user, user.getNickName());
         return videoService.getVideoSoloInfo(video, user, isLiked, isFollowed);
     }
 
@@ -95,13 +105,12 @@ public class AggregationFacade {
     public void saveVideo(String nickName, File videoFile, File thumbnail, Genre genre, String videoTitle) {
         User user = userService.findUserByNickName(nickName);
 
-        String videoFileName = s3Service.makeVideoFileName(videoFile.getName());
-        String thumbnailName = s3Service.makeThumbnailName(thumbnail.getName());
+        String videoFileName = s3Service.makefileName("video");
+        String thumbnailName = s3Service.makefileName("thumbnail");
 
-        String videoPath = s3Service.putVideoToS3(videoFile, videoFileName);
-        String thumbnailPath = s3Service.putThumbnailToS3(thumbnail, thumbnailName);
-        Video video = s3Service.saveVideo(user, videoPath, thumbnailPath, genre, videoTitle);
-        videoService.saveVideo(video);
+        String videoPath = s3Service.putFileToS3(videoFile, videoFileName, s3Config.getVideoDir());
+        String thumbnailPath = s3Service.putFileToS3(thumbnail, thumbnailName, s3Config.getThumbnailDir());
+        videoService.saveVideo(user, videoPath, thumbnailPath, genre, videoTitle);
     }
 
 
@@ -113,8 +122,12 @@ public class AggregationFacade {
 
     public void deleteVideo(String nickName, List<Long> videoIds) {
         User user = userService.findUserByNickName(nickName);
-        videoService.deleteVideo(user, videoIds);
+        List<Video> videos = videoIds.stream().map(videoService::findByVideoId).toList();
+        List<String> thumbnailPaths = videos.stream().map(Video::getThumbNailPath).toList();
 
+        videos.forEach(video -> s3Service.deleteFromS3(video.getVideoPath(), s3Config.getVideoDir()));
+        thumbnailPaths.forEach(thumbnailPath -> s3Service.deleteFromS3(thumbnailPath, s3Config.getThumbnailDir()));
+        videoService.deleteVideo(user,videoIds);
     }
 
     public void putMyPageNickNameInfo(String nowNickName, String afterNickName) {
@@ -124,8 +137,26 @@ public class AggregationFacade {
 
     public void putMyPageProfileInfo(String nickName, File profileImg) {
         User user = userService.findUserByNickName(nickName);
-        String profileName = s3Service.makeProfileName(profileImg.getName());
-        String profileImgPath = s3Service.putProfileImgToS3(profileImg, profileName);
+        if(!user.getProfileImgUrl().equals(s3Config.getDefaultImgPath())){
+            s3Service.deleteFromS3(user.getProfileImgUrl(), s3Config.getProfileImgDir());
+        }
+        String profileName = s3Service.makefileName("profile");
+        String profileImgPath = s3Service.putFileToS3(profileImg, profileName, s3Config.getProfileImgDir());
         userService.putMyPageProfileInfo(user, profileImgPath);
+    }
+
+    public UserHomeInfoListDto getUserHomeInfoList(String nickName) {
+        User user = userService.findUserByNickName(nickName);
+        return videoService.getUserHomeInfoList(user.getVideos());
+    }
+
+    public UserMyPageInfoDto getUserMyPageInfo(String nickName) {
+        User user = userService.findUserByNickName(nickName);
+        List<Follow> followings = user.getFollowings();
+        List<Like> likes = user.getLikes();
+
+        List<FollowDto> followDtos = followService.getFollowDtos(followings);
+        List<LikeDto> likeDtos = likeService.getLikeDtos(likes);
+        return userService.getMyPageInfo(user, followDtos, likeDtos);
     }
 }

@@ -1,6 +1,9 @@
 package com.indi.dev.service;
 
 import com.indi.dev.dto.follow.FollowStatusDto;
+import com.indi.dev.dto.user.FollowDto;
+import com.indi.dev.dto.user.LikeDto;
+import com.indi.dev.dto.user.UserMyPageInfoDto;
 import com.indi.dev.entity.Follow;
 import com.indi.dev.entity.User;
 import com.indi.dev.entity.Video;
@@ -10,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -18,8 +22,14 @@ public class FollowService {
     private final FollowRepository followRepository;
 
     public List<User> findFollowingUser(User user){
-        return followRepository.findByFollowingUser(user);
+        List<Follow> follows = followRepository.findByFollowingUser(user);
+        List<User> followingUsers = new ArrayList<>();
+        for (Follow follow : follows) {
+            followingUsers.add(follow.getFollowedUser());
+        }
+        return followingUsers;
     }
+
 
     public boolean checkedFollowingStatus(User user, String nickName){
         List<User> followingUser = findFollowingUser(user);
@@ -47,5 +57,16 @@ public class FollowService {
         return FollowStatusDto.builder()
                 .followStatus(followStatus)
                 .build();
+    }
+
+
+    public List<FollowDto> getFollowDtos(List<Follow> followings) {
+        return followings.stream().map(follow ->
+                FollowDto.builder()
+                        .profileImgUrl(follow.getFollowedUser().getProfileImgUrl())
+                        .nickName(follow.getFollowedUser().getNickName())
+                        .build()
+        ).toList();
+
     }
 }

@@ -1,5 +1,7 @@
 package com.indi.dev.controller;
 
+import com.indi.dev.dto.user.UserHomeInfoListDto;
+import com.indi.dev.dto.user.UserMyPageInfoDto;
 import com.indi.dev.dto.user.UserNickNameDto;
 import com.indi.dev.entity.PrincipalDetails;
 import com.indi.dev.entity.User;
@@ -27,12 +29,22 @@ public class UserController {
         aggregationFacade.saveUserNickName(user, userNickNameDto.getNickName());
     }
 
+    @GetMapping("/{nickName}/home")
+    public UserHomeInfoListDto getUserHomeInfoList(@PathVariable String nickName) {
+        return aggregationFacade.getUserHomeInfoList(nickName);
+    }
+
+    @GetMapping("/{nickName}/mypage")
+    public UserMyPageInfoDto getUserMyPageInfo(@PathVariable String nickName) {
+        return aggregationFacade.getUserMyPageInfo(nickName);
+
+    }
     @PutMapping("/{nickName}/mypage/nickName")
     public void putMyPageNickNameInfo(@PathVariable String nickName, @RequestBody UserNickNameDto userNickNameDto) {
         aggregationFacade.putMyPageNickNameInfo(nickName, userNickNameDto.getNickName());
     }
 
-    @PutMapping("/{nickName}/mypage/nickName")
+    @PutMapping("/{nickName}/mypage/profileImg")
     public void putMyPageProfileInfo(@PathVariable String nickName, @RequestParam File profileImg) {
         aggregationFacade.putMyPageProfileInfo(nickName, profileImg);
     }

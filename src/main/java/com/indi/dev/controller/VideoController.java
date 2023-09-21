@@ -27,15 +27,21 @@ public class VideoController {
         return aggregationFacade.getVideoList(genre);
     }
 
+    @GetMapping("/video/{videoId}")
+    public VideoSoloInfoDto getVideoSoloInfo(@PathVariable Long videoId) {
+        return aggregationFacade.getVideoSoloInfo(videoId);
+    }
+    @GetMapping("/studio/{nickName}")
+    public StudioVideoListDto getStudioVideoList(@PathVariable String nickName) {
+        return aggregationFacade.getStudioVideoList(nickName);
+    }
+
     @PutMapping("/{genre}/{videoId}/views")
     public void putVideoViewStatus(@PathVariable Genre genre, @PathVariable Long videoId, @RequestBody ViewReqDto viewRequestDto) {
         aggregationFacade.putVideoViewStatus(genre, videoId, viewRequestDto.getNickName());
     }
 
-    @GetMapping("/{videoId}")
-    public VideoSoloInfoDto getVideoSoloInfo(@PathVariable Long videoId, @RequestParam String nickName) {
-        return aggregationFacade.getVideoSoloInfo(videoId, nickName);
-    }
+
 
     @GetMapping("/{videoId}/comments")
     public CommentListDto getCommentListInfo(@PathVariable Long videoId) {
@@ -79,10 +85,7 @@ public class VideoController {
                 );
     }
 
-    @GetMapping("/{nickName}")
-    public StudioVideoListDto getStudioVideoList(@PathVariable String nickName) {
-        return aggregationFacade.getStudioVideoList(nickName);
-    }
+
 
     @DeleteMapping("/{nickName}")
     public void deleteVideo(@PathVariable String nickName, @RequestBody VideoIdDto videoIdDto) {
