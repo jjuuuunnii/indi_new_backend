@@ -15,7 +15,7 @@ public class ViewService {
     private final ViewRepository viewRepository;
 
     @Transactional
-    public void putVideoViewStatus(Genre genre, Video video, User user) {
+    public void putVideoViewStatus(Video video, User user) {
         View view = View.makeViewEntity(video, user);
         viewRepository.save(view);
     }

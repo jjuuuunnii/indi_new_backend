@@ -46,10 +46,10 @@ public class AggregationFacade {
 
 
 
-    public void putVideoViewStatus(Genre genre, Long videoId, String nickName) {
+    public void putVideoViewStatus(Long videoId, String nickName) {
         User user = userService.findUserByNickName(nickName);
         Video video = videoService.findByVideoId(videoId);
-        viewService.putVideoViewStatus(genre, video, user);
+        viewService.putVideoViewStatus(video, user);
     }
 
 

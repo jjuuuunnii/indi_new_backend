@@ -36,9 +36,9 @@ public class VideoController {
         return aggregationFacade.getStudioVideoList(nickName);
     }
 
-    @PutMapping("/{genre}/{videoId}/views")
-    public void putVideoViewStatus(@PathVariable Genre genre, @PathVariable Long videoId, @RequestBody ViewReqDto viewRequestDto) {
-        aggregationFacade.putVideoViewStatus(genre, videoId, viewRequestDto.getNickName());
+    @PutMapping("/{videoId}/views")
+    public void putVideoViewStatus(@PathVariable Long videoId, @RequestBody ViewReqDto viewRequestDto) {
+        aggregationFacade.putVideoViewStatus(videoId, viewRequestDto.getNickName());
     }
 
 
