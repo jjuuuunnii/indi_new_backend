@@ -61,6 +61,8 @@ public class VideoService {
                 .videoUrl(video.getVideoPath())
                 .likeStatus(isLiked)
                 .followStatus(isFollowed)
+                .animationType(video.getAnimationType())
+                .totalCgImgUrl(video.getTotalCgImgPath())
                 .build();
 
     }
@@ -89,8 +91,8 @@ public class VideoService {
     }
 
     @Transactional
-    public void saveVideo(User user, String videoPath, String thumbnailPath, Genre genre, String videoTitle) {
-        Video video = Video.makeVideoEntity(user, videoPath, thumbnailPath, genre, videoTitle);
+    public void saveVideo(User user, String videoPath, String thumbnailPath, String totalCgImg, Genre genre, String videoTitle, int animationType) {
+        Video video = Video.makeVideoEntity(user, videoPath, thumbnailPath, totalCgImg, genre, videoTitle, animationType);
         videoRepository.save(video);
     }
 
@@ -119,7 +121,9 @@ public class VideoService {
     public void deleteVideo(User user, List<Long> videoIds) {
         List<Video> videos = user.getVideos();
         videos.removeIf(video -> videoIds.contains(video.getId()));
+        videoIds.forEach(videoRepository::deleteById);
     }
+
 
     public UserHomeInfoListDto getUserHomeInfoList(List<Video> videos) {
         List<UserHomeInfoDto> userHomeInfoDtoList = videos.stream()

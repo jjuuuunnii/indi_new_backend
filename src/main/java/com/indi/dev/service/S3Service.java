@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.UUID;
 
 @Service
@@ -33,10 +35,18 @@ public class S3Service {
 
 
 
-    public void deleteFromS3(String path, String dir) {
+    public String convertToRelativePath(String absolutePath) throws URISyntaxException {
+        URI uri = new URI(absolutePath);
+        String path = uri.getPath();
+        return path.substring(s3Config.getBucket().length() + 2);
+    }
+
+    // 사용 예
+    public void deleteFromS3(String absolutePath) {
         try {
-            amazonS3Client.deleteObject(s3Config.getBucket(), dir + path);
-        } catch (AmazonS3Exception e) {
+            String relativePath = convertToRelativePath(absolutePath);
+            amazonS3Client.deleteObject(s3Config.getBucket(), relativePath);
+        } catch (AmazonS3Exception | URISyntaxException e) {
             throw new CustomException(ErrorCode.S3_ERROR);
         }
     }
@@ -44,7 +54,7 @@ public class S3Service {
 
     public String makefileName(String fileType) {
         String extension;
-        if ("profile".equals(fileType) || "thumbnail".equals(fileType)) {
+        if ("profile".equals(fileType) || "thumbnail".equals(fileType) || "totalCgImg".equals(fileType)) {
             extension = ".jpeg";
         } else if ("video".equals(fileType)) {
             extension = ".mp4";

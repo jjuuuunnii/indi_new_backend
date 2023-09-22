@@ -17,6 +17,8 @@ public class VideoReqDto {
     private File thumbnail;
     private Genre genre;
     private String videoTitle;
+    private int animationType;
+    private File totalCgImg;
 
     public VideoReqDto() {}
 }

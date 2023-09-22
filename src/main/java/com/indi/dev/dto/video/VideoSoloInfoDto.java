@@ -21,6 +21,8 @@ public class VideoSoloInfoDto {
     private String videoUrl;
     private boolean likeStatus;
     private boolean followStatus;
+    private int animationType;
+    private String totalCgImgUrl;
 
     public VideoSoloInfoDto(){}
 }

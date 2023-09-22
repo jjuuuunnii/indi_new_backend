@@ -102,15 +102,17 @@ public class AggregationFacade {
         return videoService.getVideoRankingList();
     }
 
-    public void saveVideo(String nickName, File videoFile, File thumbnail, Genre genre, String videoTitle) {
+    public void saveVideo(String nickName, File videoFile, File thumbnail, File totalCgImg, Genre genre, String videoTitle, int animationType) {
         User user = userService.findUserByNickName(nickName);
 
         String videoFileName = s3Service.makefileName("video");
         String thumbnailName = s3Service.makefileName("thumbnail");
+        String totalCgImgName = s3Service.makefileName("totalCgImg");
 
         String videoPath = s3Service.putFileToS3(videoFile, videoFileName, s3Config.getVideoDir());
         String thumbnailPath = s3Service.putFileToS3(thumbnail, thumbnailName, s3Config.getThumbnailDir());
-        videoService.saveVideo(user, videoPath, thumbnailPath, genre, videoTitle);
+        String totalCgImgPath = s3Service.putFileToS3(totalCgImg, totalCgImgName, s3Config.getTotalCgImgDir());
+        videoService.saveVideo(user, videoPath, thumbnailPath, totalCgImgPath, genre, videoTitle, animationType);
     }
 
 
@@ -125,8 +127,8 @@ public class AggregationFacade {
         List<Video> videos = videoIds.stream().map(videoService::findByVideoId).toList();
         List<String> thumbnailPaths = videos.stream().map(Video::getThumbNailPath).toList();
 
-        videos.forEach(video -> s3Service.deleteFromS3(video.getVideoPath(), s3Config.getVideoDir()));
-        thumbnailPaths.forEach(thumbnailPath -> s3Service.deleteFromS3(thumbnailPath, s3Config.getThumbnailDir()));
+        videos.forEach(video -> s3Service.deleteFromS3(video.getVideoPath()));
+        thumbnailPaths.forEach(s3Service::deleteFromS3);
         videoService.deleteVideo(user,videoIds);
     }
 
@@ -138,7 +140,7 @@ public class AggregationFacade {
     public void putMyPageProfileInfo(String nickName, File profileImg) {
         User user = userService.findUserByNickName(nickName);
         if(!user.getProfileImgUrl().equals(s3Config.getDefaultImgPath())){
-            s3Service.deleteFromS3(user.getProfileImgUrl(), s3Config.getProfileImgDir());
+            s3Service.deleteFromS3(user.getProfileImgUrl());
         }
         String profileName = s3Service.makefileName("profile");
         String profileImgPath = s3Service.putFileToS3(profileImg, profileName, s3Config.getProfileImgDir());

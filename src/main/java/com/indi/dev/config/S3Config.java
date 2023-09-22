@@ -29,6 +29,8 @@ public class S3Config {
     private String videoDir;
     @Value("${cloud.aws.s3.thumbnail}")
     private String thumbnailDir;
+    @Value("${cloud.aws.s3.total-cg-img}")
+    private String totalCgImgDir;
 
     @Bean
     public AmazonS3Client amazonS3Client(){

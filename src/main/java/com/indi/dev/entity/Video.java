@@ -45,7 +45,9 @@ public class Video {
 
     private String videoPath;
     private String thumbNailPath;
+    private String totalCgImgPath;
     private String title;
+    private int animationType;
     private LocalDateTime createdAt;
 
     //private int viewsByTime;
@@ -59,13 +61,15 @@ public class Video {
         return views.size();
     }
 
-    public static Video makeVideoEntity(User user, String videoPath, String thumbNailPath, Genre genre, String videoTitle){
+    public static Video makeVideoEntity(User user, String videoPath, String thumbNailPath, String totalCgImgPath, Genre genre, String videoTitle, int animationType){
         Video video = Video.builder()
                 .user(user)
                 .genre(genre)
                 .videoPath(videoPath)
                 .thumbNailPath(thumbNailPath)
+                .totalCgImgPath(totalCgImgPath)
                 .title(videoTitle)
+                .animationType(animationType)
                 .createdAt(LocalDateTime.now())
                 .build();
 

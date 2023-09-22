@@ -49,7 +49,9 @@ public class OauthService {
 
     private boolean findOrSaveUser(User fetchedUser) {
         Optional<User> existingUser = userRepository.findBySocialTypeAndEmail(fetchedUser.getSocialType(), fetchedUser.getEmail());
+
         if(existingUser.isPresent()) {
+            log.info("socialType = {}, email = {}",existingUser.get().getSocialType().toString(), existingUser.get().getEmail());
             return false;
         }
         userRepository.save(fetchedUser);

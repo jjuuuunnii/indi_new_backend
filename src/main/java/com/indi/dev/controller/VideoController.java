@@ -80,8 +80,10 @@ public class VideoController {
                 nickName,
                 videoReqDto.getVideoFile(),
                 videoReqDto.getThumbnail(),
+                videoReqDto.getTotalCgImg(),
                 videoReqDto.getGenre(),
-                videoReqDto.getVideoTitle()
+                videoReqDto.getVideoTitle(),
+                videoReqDto.getAnimationType()
                 );
     }
 

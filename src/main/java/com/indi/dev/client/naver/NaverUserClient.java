@@ -34,7 +34,7 @@ public class NaverUserClient implements OauthUserClient {
         return User.oauthUserToEntity(
                 naverUserResponseDto.getResponse().getName(),
                 naverUserResponseDto.getResponse().getEmail(),
-                SocialType.KAKAO,
+                SocialType.NAVER,
                 naverUserResponseDto.getResponse().getId(),
                 s3Config.getDefaultImgPath()
         );
